@@ -1,0 +1,483 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.0 (4/2/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki 
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+\usepackage[utf8]{inputenc} %To have a great opertunity to wright Icelandic letters :P
+\usepackage[T1]{fontenc} % some crap
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage[margin=1.3in]{geometry}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}\definecolor{mygray}{rgb}{0.5,0.5,0.5}\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+\setlength{\headheight}{15pt}
+\geometry{headheight = 0.6in}
+%\fancypagestyle{firstpage}{\fancyhf{}\fancyhead[L]{\includegraphics[height=0.5in, keepaspectratio=true]{hr.png}}}
+\fancypagestyle{plain}{\fancyhf{}\fancyhead[L]{\includegraphics[height=1in, keepaspectratio=true]{hr.png}}}
+\pagestyle{fancy}
+
+\lhead{\sc{Kári Tristan Helgason}}
+\rhead{\sc{Starkaður Hróbjartsson}}
+\cfoot{\thepage}
+
+\lstset{ %
+backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  %frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=Java,                   % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  title=\lstname  
+ }
+\renewcommand{\lstlistingname}{Java Code}
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Midterm Assignment\\ Preparation and Software Design with Scrum \\ T-303-HUGB} % Title
+
+\author{Benedikt Sigurleifsson \and Björn Orri Sæmundsson \and Jóhann Eiríksson \and Kári Tristan Helgason \and Sara Árnadóttir \and Starkaður Hróbjartsson} % Author name
+
+
+\date{\today} % Date for the report
+
+\begin{document}
+
+\maketitle % Insert the title, author and date
+
+\begin{center}
+\begin{tabular}{l r}
+Instructor: & Hannes Pétursson % Instructor/supervisor
+\end{tabular}
+\end{center}
+
+% If you wish to include an abstract, uncomment the lines below
+% \begin{abstract}
+% Abstract text
+% \end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+The objective of this assignment is to introduce students to Scrum best practices and workflow. 
+
+ 
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+
+\section{Setup and Methods}
+We used the IntelliJ java IDE and Eclipse for all programing involved on two different machines. Both machines used the Oracle JVM version 7 update 25. Plotting was done in Sage.
+\subsection*{Problem 1}
+We started off by writing a new class RandomConnections (code~\ref{lst:gen}) that generates new Connection objects and stores them in a java.util.HashSet. A HashSet is an implementation of the abstract class java.util.Set that uses an internal hashmap to detect and reject duplicate adds. In order for this to work we also had to override the methods equals() and hashcode() inherited from java.lang.Object in the class Connection(See appendix \ref{lst:con}). This method prevents us from getting duplicate connections and makes subsequent tests faster and more realistic. The Connections are then pushed from the set and added to an array and returned. A union-find data structure is also declared at the beginning to keep track of when all items are connected. In this case we chose to use the weighted quick-union implementation from the course website\cite{Algs4}.
+\subsection*{Problem 2}
+We created a performance testing client that takes an integer $t$ as a command line argument and performs $t$ runs of a doubling test on each of three union-find ADTs provided on the books website. The doubling test itself consists of calls to the union method in each of the implementations for each connection in the array returned by genConnections(). We took care to make sure that all implementations were tested with the same array of connections, however each trial run used a different array to get more meaningful averages. The doubling test function returns an array containing the average runtime for each of the implementations being tested. The complete code is found in appendix~\ref{code:perf}.
+
+
+\subsection*{Problem 3}
+Starting from the implementation of Weighted QuickUnion from the course website \cite{Algs4} we changed the name of the array sz to height to reflect what it's now keeping track of. The main difference was that when we join two trees we can't just add their sizes together, the height of the new tree will always be equal to the height of the larger tree, while if they are equal, one gets added to the height of the old trees. The relevant code is given in appendix~\ref{code:union}.\\
+
+Path compression was implemented using the one-pass variant, as it is cleaner and simpler, and in practice completely as effective. It involves adding a line to the find method that sets each node's grandparent as their parent, thus halving the height of the tree we are traversing. This code snippet is also found in appendix~\ref{code:find}.
+
+\subsection*{Problem 4}
+The method genGrid was implemented in the class RandomConnections.java. It produces random integers p and q and interprets them as coordinates in a grid. It then connects the item at this coordinate with all it's neighbors and stores the connections used in a hashset as before. Refer to appendix~\ref{lst:gen} for implementation details.
+
+\subsection*{Problem 5}
+We repeated the experiments from problems 2 and 3 for the two slow implementations and the three fast ones with an array of connections generated by the genGrid() function in RandomConnections.java. We created a new performance testing client that was almost an exact duplicate of the other one, only with some replacements to factor in that for each value of $N$ we generate connections for an $N \times N$ grid.
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+\section{Results and Discussion}
+
+As is clear from table 1 WeightedQuickUnion is significantly faster than the other two variants. By examining the ratio we can see QuickFind growing as a function of $M^2$ where $M$ is the number of connections generated by an input of size N. It must be noted though that there is no guarantee that the same input size will give the same number of unions, as the genConnections function is random. UnionFind is more complicated, as it's running time grows as a function of $M \cdot H(t)$ where $H(t)$ is the average height of the trees, as the union operation in that implementation uses a number of operations equivalent to the height of the tree being traversed. For our tests, this version is plainly even slower than QuickFind. These results seem quite strange, as mathematically, all other things being equal that would seem impossible. QuickFind has a running time $O(N^2)$ while QuickUnion is in the worst case as slow, but on average quite a bit faster. We hypothesize that the reason for this is twofold. Firstly, the QuickFind implementation traverses the array in order, allowing the processor to prefetch \cite{Intel}, \cite{Intel:AORM} the next elements into cache, making the traversal significantly faster than the random accesses executed by QuickUnion. Secondly, our implementation of genConnections is quite fast, so we thought we might be running into problems with the garbage collector kicking in while we should be running the union operation in QuickUnion. To validate this theory we ran the program with the flag \texttt{-verbose:gc} to see what the garbage collector was doing. This unfortunately proved to be wrong, as the GC was doing most of it's work before running QuickFind and did not significantly impact the runtime of the program anyway. WeightedQuickUnion however seems to have an almost linear order of growth, which makes sense given that the union operations costs $O( \log M)$ operations, so the running time grows as a function of $M \log M$, or linearrithmically. The results given in table 1 validate our hypothesis.\\
+
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{c | c c c c c c } % This table contains four right justified columns
+			\toprule
+			{\bf N} & {\bf QF (sec)} & {\bf Ratio } & {\bf  QU (sec)} & {\bf Ratio } & {\bf WQU  (sec)} & {\bf Ratio }  \\ 
+			\midrule
+			8000 & 0.04 & 3.2 & 0.04 & 3.0 & 0.00 & 1.3 \\
+			16000 & 0.13 & 3.6 & 0.22 & 5.0 & 0.00 & 1.5 \\
+			32000 & 0.57 & 4.2 & 1.17 & 5.2 & 0.01 & 1.4 \\
+			64000 & 2.22 & 3.9 & 5.80 & 5.0 & 0.02 & 1.7 \\
+			128000 & 9.00 & 4.0 & 32.30 & 5.6 & 0.04 & 2.1 \\			
+			\bottomrule
+		\end{tabular}
+		\caption{Results of running 10 iterations of doubling test for different input sizes.}
+		\label{tab:deami2}
+	\end{center}
+\end{table}
+
+Our implementation HeightedQuickUnion proved to be about as fast as the weighted version. Below we give proof that validates the experimental results in table 2.
+
+\subsubsection*{Proof}
+\emph{Statement}: In the Heighted Quick Union implementation of the union find algorithm, each call to union will result in $O(\log n)$ operations in the worst case.
+
+\emph{Proof}: Each call to union will result in two calls to find and a constant number of other operations. Each call to find will use at most a number of operations equal to the height of the tree. Refer to the Algorithms book \cite{Sedgewick:2012} for proof that the height of each tree built with Weighted Quick Union is at most $\log n$, and observe that the proof holds as well for Heighted Quick Union. So we see that each call to union will take at most $2 \log n + c$ operations where $c$ is a small constant. This is on the order of $\log n$ and so we have shown that the running time of the union operation in Heighted Quick Union is proportional to $\log n$ in the worst case, and so will grow logarithmically with increasing input size.\\
+
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{c | c c c c c } % This table contains four right justified columns
+			\toprule
+			{\bf N} & {\bf HQU} & {\bf WQUPC } & {\bf  WQU} & {\bf HQU/WQU} & {\bf WQUPC/WQU }  \\ 
+			\midrule
+			64000 & 0.03 & 0.03 & 0.03 & 1.05 & 0.91 \\
+			128000 & 0.07 & 0.05 & 0.06 & 1.17 & 0.83 \\
+			256000 & 0.13 & 0.10 & 0.12 & 1.05 & 0.79 \\
+			512000 & 0.29 & 0.17 & 0.28 & 1.03 & 0.60 \\
+			1024000 & 0.68 & 0.40 & 0.65 & 1.04 & 0.61 \\
+			\bottomrule
+		\end{tabular}
+		\caption{Running time results for 100 iterations of the fast UF algorithms.}
+		\label{tab:deami2}
+	\end{center}
+\end{table}
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[scale=0.5]{sage0.png} % Include the image placeholder.png
+		\caption{The plots of the two ratios against each other with WQU as the baseline.}
+	\end{center}
+\end{figure}
+
+In figure 1 we can clearly see the advantage path compression gives us over the baseline weighting. The heighted implementation is a tiny bit slower than weighted in the average case, most likely due to a more complicated comparison in the union method.
+Now in the second run of experiments where we ran the doubling test on connections from genGrid we get some interesting results. In these experiments QuickUnion is faster than QuickFind as it should be. Both array generators use a random shuffle on the array before returning it to guarantee randomness, so there does not appear to be any simple explanation for this. Unfortunantly this removes some credibility from our earlier theory regarding cache prefetching. To make sure that these discrepancies were not because of some strange behavior of oracle's JVM we exported a jar file and ran it on an AWS EC2 instance running Ubuntu Server 12.04 with the OpenJDK JVM and also on a local installation of ArchLinux, all with the same results. It seems we have to admit that we don't fully understand this behavior.
+
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{c | c c c } % This table contains four right justified columns
+			\toprule
+			{\bf N} & {\bf QF} &  {\bf  QU} & {\bf WQU} \\ 
+			\midrule
+			8000 & 0.03 & 0.01 & 0.00 \\			16000 & 0.12 & 0.03 & 0.00 \\
+			32000 & 0.50 & 0.27 & 0.00 \\			64000 & 2.03 & 1.25 & 0.01 \\			128000 & 8.04 & 6.37 & 0.03 \\
+			\bottomrule
+		\end{tabular}
+		\caption{Comparison of the slow versions of UF from the second run.}
+		\label{tab:deami2}
+	\end{center}
+\end{table}
+
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{c | c c c} % This table contains four right justified columns
+			\toprule
+            {\bf N} & {\bf WQUF}  & {\bf  HQUF} &  {\bf WQUPC }  \\ 
+			\midrule
+            64000 & 0.02  & 0.03  & 0.01 \\
+            128000 & 0.04  & 0.04  & 0.02 \\
+            256000 & 0.09  & 0.10  & 0.05 \\
+            512000 & 0.17  & 0.18  & 0.09 \\
+            1024000 & 0.53  & 0.56  & 0.33 \\
+			\bottomrule
+		\end{tabular}
+		\caption{Comparison of the three fast versions of UF from the second run.}
+		\label{tab:deami3}
+	\end{center}
+\end{table}
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[scale=0.36]{sage2.png} % Include the image placeholder.png
+		\includegraphics[scale=0.36]{sage1.png} % Include the image placeholder.png
+		\caption{Running time of the different implementations of UF as a function of input size on a log-log plot.}
+	\end{center}
+\end{figure}
+
+
+Tables 3 and 4 show the results of another run of the doubling experiments for the slow and fast implementations respectively. Figures 2 shows plots of the running times of the algorithms as a function of input size N. We plot them on separate graphs as it makes no sense comparing a quadratic running time to a linearrithmic one. As is apparent from table~\ref{tab:deami3} we are able to solve a whole other class of problems with the fast algorithms than the slower ones.
+%----------------------------------------------------------------------------------------
+%	SECTION 4
+%----------------------------------------------------------------------------------------
+
+\section{Conclusion}
+
+The results were conclusive. The fastest implementation of Union Find is the weighted variant with path compression, and it's running time is very close to being linear. The two slower versions are quadratic. There is quite a bit of uncertainty involved here as the tests were not run in an isolated environment, and the OS of the computer running the tests has lots of other things to worry about, so as always experimental results of this nature come with a few caveats. These are discussed further in the Algorithms book \cite{Sedgewick:2012}. We however managed to gain an insight into how these algorithms perform in practice, and gained a deeper understanding of why algorithm design is so important in the field of computer science. We ran into some interesting problems with the slower implementations as was described above and spent a great deal of time trying to get to the bottom of what was causing it. We feel we gained better insight into how java handles garbage collection, and how the JVM affects the performance of programs, even though we were not able to solve this particular question conclusively.
+
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\bibliographystyle{unsrt}
+
+\bibliography{sample}
+
+%----------------------------------------------------------------------------------------
+\pagebreak
+
+
+\appendix
+\renewcommand\thesubsection{A.\Roman{subsection}}
+\section{Appendices}
+
+\subsection{Connection}
+
+\begin{lstlisting}[caption=Connection class with methods overridden., label=lst:con]
+public class Connection
+{
+    int p, q;
+    
+    public Connection(int p, int q) 
+    { this.p = p; this.q = q; }
+
+    public int p() { return this.p; }
+    public int q() { return this.q; }
+
+    //Override comparison methods for Connection to ba able to use a Set
+    public boolean equals(Object o){
+        if(o == null){ return false;}
+        if(o == this){ return true;}
+        if(!(o instanceof Connection)) { return false;}
+        Connection comparator = (Connection)o;
+        if (comparator.p() == this.p() && comparator.q() == this.q()){
+            return true;
+        }
+        else if(comparator.p() == this.q() && comparator.q() == this.p()){
+            return true;
+        }
+        else{return false;}
+    }
+
+    // Java.util.HashSet uses this method to support an internal HashMap
+    public int hashCode(){
+        Integer a = this.p;
+        Integer b = this.q;
+        return a.hashCode() ^ b.hashCode();
+    }
+
+    public static void main(String[] args){
+        Connection a = new Connection(15, 57);
+        Connection b = new Connection(15, 57);
+        assert (a.equals(b));
+        assert (b.equals(a));
+        assert (a.hashCode() == b.hashCode());
+        b = new Connection(57, 15);
+        assert (a.hashCode() == b.hashCode());
+        assert (a.equals(b));
+        assert (b.equals(a));
+        b = new Connection(15, 56);
+        assert (a.hashCode() != b.hashCode());
+        assert !(a.equals(b));
+        assert !(b.equals(a));
+        StdOut.println("Tests finished successfully");
+    }
+	    
+}
+\end{lstlisting}
+\pagebreak
+
+\subsection{Performance test}
+
+\begin{lstlisting}[caption=Performance test client., label=code:perf]
+public class PerformanceTest {
+
+    public static double[] timeTrial(int i, int t){
+        Connection[] con = RandomConnections.genConnections(i);
+        double[][] runningTimeResults = new double[3][t];
+        for(int j = 0; j < t; ++j){
+            QuickFindUF qf1 = new QuickFindUF(i);
+            QuickUnionUF qf2 = new QuickUnionUF(i);
+            WeightedQuickUnionUF qf3 = new WeightedQuickUnionUF(i);
+            Stopwatch timer1 = new Stopwatch();
+            for(Connection c : con){
+                qf1.union(c.p(), c.q());
+            }
+            runningTimeResults[0][j] = timer1.elapsedTime();
+            Stopwatch timer2 = new Stopwatch();
+            for(Connection c : con){
+                qf2.union(c.p(), c.q());
+            }
+            runningTimeResults[1][j] = timer2.elapsedTime();
+            Stopwatch timer3 = new Stopwatch();
+            for(Connection c : con){
+                qf3.union(c.p(), c.q());
+            }
+            runningTimeResults[2][j] = timer3.elapsedTime();
+        }
+        double[] means = new double[3];
+        for(int j = 0; j < 3; ++j){
+           means[j] = StdStats.mean(runningTimeResults[j]);
+        }
+        return means;
+    }
+
+    public static void main(String[] args){
+        int t = Integer.parseInt(args[0]);
+        int initialValue = 8000;
+        double[] lastResults = timeTrial(initialValue/2, t);
+        StdOut.println("N:          QF              QU              WQU");
+        for(int i = initialValue; i <= initialValue * Math.pow(2,4); i+=i){
+            double[] results = timeTrial(i, t);
+            StdOut.printf("%7d %8.2f %8.1f %8.2f %8.1f %8.2f %8.1f\n", i, results[0], results[0]/lastResults[0],
+                    results[1], results[1]/lastResults[1], results[2], results[2]/lastResults[2]);
+            lastResults = results;
+        }
+    }
+}
+\end{lstlisting}
+\pagebreak
+
+\subsection{Modifications to Union Find}
+
+\begin{lstlisting}[caption=union function in HQU, label=code:union]
+    public void union(int p, int q) {
+        int i = find(p);
+        int j = find(q);
+        if (i == j) return;
+
+        // make shorter root point to higher one
+        if   (height[i] < height[j]) { id[i] = j; height[i] =  height[j]; }
+        else if(height[i] > height[j]){ id[j] = i; height[j] = height[i]; }
+        else {id[i] = j; height[j]++;}
+        count--;
+    }
+\end{lstlisting}
+\vspace{3ex}
+
+\begin{lstlisting}[caption=find function in WQUPC, label=find]
+ public int find(int p) {
+        while (p != id[p]){
+            id[p] = id[id[p]];
+            p = id[p];
+        }
+        return p;
+    }
+\end{lstlisting}
+\pagebreak
+
+\subsection{Connection Generators}
+
+\begin{lstlisting}[caption=genConnections and genGrid, label=lst:gen]
+public class RandomConnections {
+    public static Connection[] genConnections(int N){
+        WQUPC uf = new WQUPC(N);
+        Set<Connection> connectionSet = new HashSet<>();
+        int iter = 0;
+        while(uf.count() != 1){
+            int p = StdRandom.uniform(N);
+            int q = StdRandom.uniform(N);
+            uf.union(p,q);
+            connectionSet.add(new Connection(p, q));
+        }
+        Connection[] con = new Connection[connectionSet.size()];
+        for(Connection c : connectionSet){
+            con[iter++] = c;
+        }
+        StdRandom.shuffle(con);
+        return con;
+    }
+    public static Connection[] genGrid(int N){
+        WQUPC uf = new WQUPC(N*N);
+        CoordChecker cc = new CoordChecker(N);
+        Set<Connection> connectionSet = new HashSet<>();
+        while(uf.count() != 1){
+            int p = StdRandom.uniform(N);
+            int q = StdRandom.uniform(N);
+            try{
+                connectNeighbors(p,q,connectionSet, uf, cc);
+            } catch(ArrayIndexOutOfBoundsException e){
+                System.err.println("Oops!, this index is out of bounds!");
+            }
+        }
+        int iter = 0;
+        Connection[] con = new Connection[connectionSet.size()];
+        for(Connection c : connectionSet){
+            con[iter++] = c;
+        }
+        StdRandom.shuffle(con);
+        return con;
+    }
+    public static void connectNeighbors(int p, int q, Set cs, WQUPC uf, CoordChecker cc){
+       if(!(cc.checkCoords(p,q))){ throw new ArrayIndexOutOfBoundsException();}
+       if(cc.checkCoords(p + 1,q)){
+           uf.union(cc.toArray(p,q), cc.toArray(p+1,q));
+           cs.add(new Connection(cc.toArray(p,q), cc.toArray(p+1,q)));
+       }
+       if(cc.checkCoords(p - 1,q)){
+           uf.union(cc.toArray(p,q), cc.toArray(p-1,q));
+           cs.add(new Connection(cc.toArray(p,q), cc.toArray(p-1,q)));
+       }
+       if(cc.checkCoords(p,q + 1)){
+           uf.union(cc.toArray(p,q), cc.toArray(p,q+1));
+           cs.add(new Connection(cc.toArray(p,q), cc.toArray(p,q+1)));
+       }
+       if(cc.checkCoords(p,q - 1)){
+           uf.union(cc.toArray(p,q), cc.toArray(p,q-1));
+           cs.add(new Connection(cc.toArray(p,q), cc.toArray(p,q-1)));
+       }
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Coordinate checker nested class, label=code:coord]
+    // Class to validate coords
+    private static class CoordChecker{
+        private int size;
+
+        public CoordChecker(int N){ //Constructor
+            size = N;
+        }
+        public int toArray(int i, int j){
+            return i*size + j;
+        }
+        public boolean checkCoords(int i, int j){
+            return (i >= 0) && (j >= 0) && (i < size) && (j < size);
+        }
+    }
+\end{lstlisting}
+
+
+\end{document}
